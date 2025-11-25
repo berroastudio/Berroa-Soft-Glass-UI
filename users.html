@@ -1,0 +1,831 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Berroa Soft Glass UI - Users</title>
+  
+  <!-- Fuentes y iconos -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  
+  <style>
+    :root {
+      --bg-color: #E8EAE6;
+      --card-bg: #ffffff;
+      --primary-accent: #FCD34D;
+      --text-dark: #1F2937;
+      --text-light: #9CA3AF;
+      --accent-dark: #111827;
+      --font-main: 'Outfit', sans-serif;
+      --shadow-soft: 0 10px 40px -10px rgba(0,0,0,0.05);
+      --radius-lg: 32px;
+      --radius-md: 16px;
+      --radius-sm: 12px;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      font-family: var(--font-main);
+      background-color: var(--bg-color);
+      background: linear-gradient(135deg, #f3f4f6 0%, #e5e7eb 100%);
+      color: var(--text-dark);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    /* Container Principal */
+    .main-container {
+      width: 100%;
+      max-width: 1400px;
+      background: rgba(255, 255, 255, 0.6);
+      backdrop-filter: blur(20px);
+      border-radius: 40px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.1);
+      padding: 20px 40px;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    /* --- Top Navigation --- */
+    .top-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 20px;
+      margin-bottom: 10px;
+      flex-wrap: wrap;
+      gap: 15px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.2rem;
+    }
+    .logo-icon { font-size: 24px; color: var(--accent-dark); }
+
+    .center-menu {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .center-menu a {
+      text-decoration: none;
+      color: var(--text-light);
+      font-weight: 500;
+      font-size: 0.95rem;
+      transition: color 0.3s;
+      padding: 8px 16px;
+      border-radius: 20px;
+    }
+
+    .center-menu a.active, .center-menu a:hover {
+      color: var(--text-dark);
+      position: relative;
+    }
+
+    /* Pill indicator for active menu */
+    .center-menu a.active {
+      background: var(--accent-dark);
+      color: white;
+    }
+
+    .user-actions {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .btn-icon {
+      background: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--text-dark);
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.03);
+    }
+
+    .btn-circle {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: white;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+    }
+
+    .user-avatar-mini img {
+      width: 40px; height: 40px; border-radius: 50%;
+    }
+
+    /* --- Dashboard Grid --- */
+    .dashboard-grid {
+      display: grid;
+      grid-template-columns: 280px 1fr 320px;
+      gap: 25px;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .glass-panel {
+      background: var(--card-bg);
+      border-radius: var(--radius-lg);
+      padding: 25px;
+      box-shadow: var(--shadow-soft);
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+    }
+
+    /* --- Left Column: User List --- */
+    .col-left { gap: 20px; }
+
+    .search-bar {
+      background: #F3F4F6;
+      border-radius: var(--radius-md);
+      padding: 10px 15px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .search-bar input {
+      border: none; background: transparent; outline: none; width: 100%;
+      font-family: inherit;
+    }
+    .filter-btn { border: none; background: white; padding: 5px; border-radius: 6px; cursor: pointer; }
+
+    .user-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 15px;
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    .user-item:hover, .user-item.active {
+      background: #F9FAFB;
+    }
+    .user-item img { width: 45px; height: 45px; border-radius: 50%; object-fit: cover; }
+    .user-info h4 { font-size: 0.95rem; margin-bottom: 2px; }
+    .user-info p { font-size: 0.8rem; color: var(--text-light); }
+    .mini-progress {
+      height: 4px; background: #eee; width: 100%; margin-top: 8px; border-radius: 2px;
+    }
+    .mini-progress .bar {
+      height: 100%; background: var(--primary-accent); border-radius: 2px;
+    }
+    .mini-progress .bar.dark { background: var(--accent-dark); }
+
+    .pagination {
+      margin-top: auto; display: flex; justify-content: center; gap: 10px;
+    }
+    .page-btn {
+      width: 30px; height: 30px; border-radius: 50%; border: none; background: transparent; cursor: pointer; color: var(--text-light);
+    }
+    .page-btn.active { background: white; color: var(--text-dark); font-weight: bold; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+
+    /* --- Center Column: Calendar --- */
+    .col-center {
+      background: rgba(255,255,255,0.5);
+    }
+
+    .stats-header {
+      display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;
+    }
+    .main-stat h2 { font-weight: 400; font-size: 1.5rem; }
+    .main-stat .highlight { font-weight: 700; }
+    .month-selector {
+      background: white; padding: 8px 16px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; display: flex; align-items: center; gap: 5px; cursor: pointer;
+    }
+
+    .status-pills {
+      display: flex; gap: 15px; margin-bottom: 30px;
+    }
+    .pill {
+      flex: 1; padding: 15px; border-radius: var(--radius-md);
+      display: flex; flex-direction: column; justify-content: center;
+      cursor: pointer; transition: transform 0.2s;
+    }
+    .pill:hover { transform: translateY(-3px); }
+    .pill.active { background: var(--primary-accent); color: var(--text-dark); }
+    .pill.dark { background: var(--accent-dark); color: white; }
+    .pill.grey { background: #E5E7EB; color: var(--text-light); }
+    .pill .label { font-size: 0.8rem; margin-bottom: 5px; opacity: 0.8; }
+    .pill .value { font-weight: 700; font-size: 1.1rem; }
+
+    .calendar-wrapper { flex: 1; display: flex; flex-direction: column; }
+    .weekdays {
+      display: grid; grid-template-columns: repeat(7, 1fr); text-align: center;
+      color: var(--text-light); font-size: 0.85rem; margin-bottom: 15px;
+    }
+    .days-grid {
+      display: grid; grid-template-columns: repeat(7, 1fr); gap: 10px; flex: 1;
+    }
+    .day-cell {
+      background: white; border-radius: 12px; padding: 8px;
+      display: flex; flex-direction: column; justify-content: space-between;
+      min-height: 80px; position: relative; transition: all 0.2s;
+    }
+    .day-cell.header-day { background: transparent; min-height: auto; align-items: center; }
+    .day-cell span { font-size: 0.9rem; font-weight: 500; z-index: 2; }
+    .day-cell .event {
+      font-size: 0.7rem; margin-top: auto; padding: 4px; border-radius: 4px; text-align: center;
+    }
+    /* Estilos para eventos específicos */
+    .event.vacation { background: #f3f4f6; color: var(--text-light); }
+    .event.birthday { background: var(--primary-accent); color: var(--text-dark); font-weight: 600; }
+    .event.sick { background: var(--accent-dark); color: white; }
+
+    /* Decoración de celdas vacías */
+    .day-cell.empty { background: transparent; border: 1px dashed #e5e7eb; }
+
+    /* --- Right Column: Profile --- */
+    .col-right {
+      padding: 0; overflow: hidden;
+    }
+
+    .profile-header-art {
+      position: relative;
+      height: 140px;
+      background: black;
+      border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+      display: flex; justify-content: center;
+      overflow: hidden;
+    }
+    .abstract-waves {
+      position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+      background: radial-gradient(circle at 50% 120%, #FCD34D 10%, transparent 60%),
+                  radial-gradient(circle at 20% 20%, #FCD34D 5%, transparent 30%);
+      filter: blur(20px); opacity: 0.8;
+    }
+
+    .profile-pic-large {
+      width: 90px; height: 90px; border-radius: 50%;
+      border: 4px solid white;
+      position: absolute; bottom: -45px; z-index: 10;
+      overflow: hidden;
+    }
+    .profile-pic-large img { width: 100%; height: 100%; object-fit: cover; }
+
+    .profile-info-center {
+      margin-top: 55px; text-align: center; margin-bottom: 25px;
+    }
+    .profile-info-center h2 { font-size: 1.4rem; font-weight: 600; }
+    .profile-info-center p { color: var(--text-light); font-size: 0.9rem; }
+
+    .info-section { padding: 0 25px 25px 25px; }
+    .info-section h3 { font-size: 1rem; margin-bottom: 15px; font-weight: 600; }
+
+    .info-list { list-style: none; }
+    .info-list li { display: flex; gap: 15px; margin-bottom: 15px; align-items: flex-start; }
+    .info-list i { font-size: 20px; color: var(--text-light); margin-top: 2px; }
+    .info-text { display: flex; flex-direction: column; }
+    .info-text label { font-size: 0.75rem; color: var(--text-light); }
+    .info-text span { font-size: 0.9rem; font-weight: 500; }
+
+    .docs-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .doc-card {
+      padding: 10px; border-radius: 12px; display: flex; gap: 10px; align-items: center;
+    }
+    .blue-doc { background: #DBEAFE; color: #1E40AF; }
+    .orange-doc { background: #FFEDD5; color: #9A3412; }
+    .doc-icon { font-size: 24px; }
+    .doc-meta { display: flex; flex-direction: column; }
+    .doc-meta span { font-size: 0.85rem; font-weight: 600; }
+    .doc-meta small { font-size: 0.7rem; opacity: 0.7; }
+
+    .stat-bar-group { margin-bottom: 15px; }
+    .stat-label { display: flex; justify-content: space-between; font-size: 0.85rem; margin-bottom: 5px; font-weight: 500;}
+    .progress-bar { height: 6px; background: #eee; border-radius: 3px; overflow: hidden; }
+    .fill { height: 100%; background: var(--primary-accent); border-radius: 3px; }
+    .black-fill { background: var(--accent-dark); }
+
+    /* --- Responsive Design --- */
+    @media (max-width: 1200px) {
+      .dashboard-grid {
+        grid-template-columns: 250px 1fr 300px;
+        gap: 20px;
+      }
+    }
+
+    @media (max-width: 992px) {
+      .dashboard-grid {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto auto auto;
+        gap: 20px;
+      }
+      
+      .col-left {
+        order: 3;
+      }
+      
+      .col-center {
+        order: 1;
+      }
+      
+      .col-right {
+        order: 2;
+      }
+      
+      .main-container {
+        padding: 15px 20px;
+      }
+      
+      .top-nav {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+      
+      .center-menu {
+        width: 100%;
+        justify-content: flex-start;
+        margin: 10px 0;
+      }
+      
+      .user-actions {
+        align-self: flex-end;
+        margin-top: -50px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .main-container {
+        border-radius: 20px;
+        padding: 15px;
+      }
+      
+      .glass-panel {
+        padding: 20px;
+        border-radius: 20px;
+      }
+      
+      .dashboard-grid {
+        gap: 15px;
+      }
+      
+      .status-pills {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .user-actions {
+        position: static;
+        margin-top: 10px;
+        width: 100%;
+        justify-content: flex-end;
+      }
+      
+      .center-menu {
+        gap: 10px;
+      }
+      
+      .center-menu a {
+        padding: 6px 12px;
+        font-size: 0.85rem;
+      }
+    }
+
+    @media (max-width: 576px) {
+      .days-grid {
+        gap: 5px;
+      }
+      
+      .day-cell {
+        min-height: 60px;
+        padding: 5px;
+      }
+      
+      .day-cell span {
+        font-size: 0.8rem;
+      }
+      
+      .day-cell .event {
+        font-size: 0.6rem;
+      }
+      
+      .profile-header-art {
+        height: 120px;
+      }
+      
+      .profile-pic-large {
+        width: 80px;
+        height: 80px;
+        bottom: -40px;
+      }
+      
+      .profile-info-center {
+        margin-top: 50px;
+      }
+      
+      .info-section {
+        padding: 0 15px 15px 15px;
+      }
+      
+      .docs-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="main-container">
+    
+    <header class="top-nav">
+      <div class="logo">
+        <div class="logo-icon"><i class="ph-fill ph-polygon"></i></div>
+        <span>BERROA SOFT</span>
+      </div>
+      
+      <nav class="center-menu">
+        <a href="#">Dashboard</a>
+        <a href="#" class="active">People</a>
+        <a href="#">Hiring</a>
+        <a href="#">Devices</a>
+        <a href="#">User Profile</a>
+        <a href="#">Apps</a>
+        <a href="#">Calendar</a>
+      </nav>
+      
+      <div class="user-actions">
+        <button class="btn-icon"><i class="ph ph-gear"></i> Setting</button>
+        <button class="btn-circle"><i class="ph ph-bell"></i></button>
+        <div class="user-avatar-mini">
+          <img src="https://i.pravatar.cc/150?u=8" alt="User">
+        </div>
+      </div>
+    </header>
+
+    <div class="dashboard-grid">
+      
+      <section class="col-left glass-panel">
+        <div class="search-bar">
+          <i class="ph ph-magnifying-glass"></i>
+          <input type="text" placeholder="Search employees..." id="searchInput">
+          <button class="filter-btn"><i class="ph ph-sliders-horizontal"></i></button>
+        </div>
+
+        <div class="user-list" id="userListContainer">
+          <!-- User list will be populated by JavaScript -->
+        </div>
+
+        <div class="pagination">
+          <button class="page-btn"><i class="ph ph-arrow-left"></i></button>
+          <button class="page-btn active">1</button>
+          <button class="page-btn">2</button>
+          <button class="page-btn"><i class="ph ph-arrow-right"></i></button>
+        </div>
+      </section>
+
+      <section class="col-center glass-panel">
+        <div class="stats-header">
+          <div class="main-stat">
+            <h2>264.00 hrs / <span class="highlight">$2,647</span></h2>
+          </div>
+          <div class="month-selector" id="monthSelector">
+            <span>December</span> <i class="ph ph-caret-down"></i>
+          </div>
+        </div>
+
+        <div class="status-pills">
+          <div class="pill active">
+            <span class="label">Work day</span>
+            <span class="value">167 hrs</span>
+          </div>
+          <div class="pill dark">
+            <span class="label">Meeting</span>
+            <span class="value">43 hrs</span>
+          </div>
+          <div class="pill grey">
+            <span class="label">Vacation</span>
+            <span class="value">74 hrs</span>
+          </div>
+        </div>
+
+        <div class="calendar-wrapper">
+          <div class="weekdays">
+            <div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>Sat</div><div>Sun</div>
+          </div>
+          <div class="days-grid" id="calendarGrid">
+            <!-- Calendar will be populated by JavaScript -->
+          </div>
+        </div>
+      </section>
+
+      <section class="col-right glass-panel">
+        <div class="profile-header-art">
+          <div class="abstract-waves"></div>
+          <div class="profile-pic-large">
+            <img src="https://i.pravatar.cc/150?u=1" id="profileImage" alt="Profile">
+          </div>
+        </div>
+
+        <div class="profile-info-center">
+          <h2 id="profileName">Amélie Laurent</h2>
+          <p id="profileRole">UX Designer</p>
+        </div>
+
+        <div class="info-section">
+          <h3>Basic Information</h3>
+          <ul class="info-list">
+            <li>
+              <i class="ph ph-cake"></i>
+              <div class="info-text">
+                <label>Birthday</label>
+                <span id="birthdayInfo">26 September 1998</span>
+              </div>
+            </li>
+            <li>
+              <i class="ph ph-phone"></i>
+              <div class="info-text">
+                <label>Phone number</label>
+                <span id="phoneInfo">+33 1 70 36 39 50</span>
+              </div>
+            </li>
+            <li>
+              <i class="ph ph-envelope-simple"></i>
+              <div class="info-text">
+                <label>E-Mail</label>
+                <span id="emailInfo">amelielaurent88@gmail.com</span>
+              </div>
+            </li>
+            <li>
+              <i class="ph ph-map-pin"></i>
+              <div class="info-text">
+                <label>Address</label>
+                <span id="addressInfo">95700 Roissy-en-France</span>
+              </div>
+            </li>
+          </ul>
+        </div>
+
+        <div class="info-section">
+          <h3>Documents</h3>
+          <div class="docs-grid">
+            <div class="doc-card blue-doc">
+              <div class="doc-icon"><i class="ph-fill ph-file-doc"></i></div>
+              <div class="doc-meta">
+                <span>Contract</span>
+                <small>2.3 mb</small>
+              </div>
+            </div>
+            <div class="doc-card orange-doc">
+              <div class="doc-icon"><i class="ph-fill ph-file-ppt"></i></div>
+              <div class="doc-meta">
+                <span>Resume</span>
+                <small>7.6 mb</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-section">
+          <h3>Statistics</h3>
+          <div class="stat-bar-group">
+            <div class="stat-label"><span>Business trips</span> <span>58 days</span></div>
+            <div class="progress-bar"><div class="fill" style="width: 60%"></div></div>
+          </div>
+          <div class="stat-bar-group">
+            <div class="stat-label"><span>Sickness</span> <span>24 days</span></div>
+            <div class="progress-bar"><div class="fill black-fill" style="width: 20%"></div></div>
+          </div>
+        </div>
+
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    // Datos Mockup de Usuarios
+    const users = [
+      {
+        id: 1,
+        name: "Harry Bender",
+        role: "Head of Design",
+        img: "https://i.pravatar.cc/150?u=12",
+        progress: 40,
+        active: false,
+        details: {
+          phone: "+1 202 555 0191",
+          email: "harry.bender@design.co",
+          address: "New York, USA",
+          birthday: "12 August 1985"
+        }
+      },
+      {
+        id: 2,
+        name: "Amélie Laurent",
+        role: "UX Designer",
+        img: "https://i.pravatar.cc/150?u=1",
+        progress: 75,
+        active: true,
+        details: {
+          phone: "+33 1 70 36 39 50",
+          email: "amelielaurent88@gmail.com",
+          address: "95700 Roissy-en-France",
+          birthday: "26 September 1998"
+        }
+      },
+      {
+        id: 3,
+        name: "Jonathan Kelly",
+        role: "Mobile Lead",
+        img: "https://i.pravatar.cc/150?u=5",
+        progress: 60,
+        active: false,
+        details: {
+          phone: "+44 20 7946 0958",
+          email: "jon.kelly@dev.uk",
+          address: "London, UK",
+          birthday: "03 March 1990"
+        }
+      },
+      {
+        id: 4,
+        name: "Sarah Page",
+        role: "Network Engineer",
+        img: "https://i.pravatar.cc/150?u=9",
+        progress: 30,
+        active: false,
+        details: {
+          phone: "+1 415 555 0100",
+          email: "sarah.p@network.net",
+          address: "San Francisco, USA",
+          birthday: "15 November 1992"
+        }
+      },
+      {
+        id: 5,
+        name: "Erica Wyatt",
+        role: "Head of Design",
+        img: "https://i.pravatar.cc/150?u=25",
+        progress: 20,
+        active: false,
+        details: {
+          phone: "+1 202 555 0134",
+          email: "erica.w@crextio.com",
+          address: "Austin, USA",
+          birthday: "22 June 1988"
+        }
+      }
+    ];
+
+    // Renderizar Lista de Usuarios
+    function renderUserList(filteredUsers = users) {
+      const container = document.getElementById('userListContainer');
+      container.innerHTML = '';
+
+      filteredUsers.forEach(user => {
+        const div = document.createElement('div');
+        div.className = `user-item ${user.active ? 'active' : ''}`;
+        div.onclick = () => selectUser(user.id);
+
+        // Determinar color de barra (Alternando para demo)
+        const barClass = user.id % 2 === 0 ? '' : 'dark';
+
+        div.innerHTML = `
+          <img src="${user.img}" alt="${user.name}">
+          <div class="user-info" style="flex:1">
+            <h4>${user.name}</h4>
+            <p>${user.role}</p>
+            <div class="mini-progress">
+              <div class="bar ${barClass}" style="width: ${user.progress}%"></div>
+            </div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Función para seleccionar usuario y actualizar UI
+    function selectUser(id) {
+      // Actualizar estado activo en array
+      users.forEach(u => u.active = (u.id === id));
+      renderUserList(); // Re-renderizar lista para actualizar clases CSS
+
+      // Buscar usuario y actualizar Columna Derecha
+      const user = users.find(u => u.id === id);
+      if(user) {
+          // Animación simple de opacidad
+          const rightPanel = document.querySelector('.col-right');
+          rightPanel.style.opacity = '0.5';
+          
+          setTimeout(() => {
+              document.getElementById('profileName').innerText = user.name;
+              document.getElementById('profileRole').innerText = user.role;
+              document.getElementById('profileImage').src = user.img;
+              
+              // Actualizar datos info
+              document.getElementById('birthdayInfo').innerText = user.details.birthday;
+              document.getElementById('phoneInfo').innerText = user.details.phone;
+              document.getElementById('emailInfo').innerText = user.details.email;
+              document.getElementById('addressInfo').innerText = user.details.address;
+
+              rightPanel.style.opacity = '1';
+          }, 200);
+      }
+    }
+
+    // Generar Calendario Mockup
+    function renderCalendar() {
+        const grid = document.getElementById('calendarGrid');
+        const daysInMonth = 31;
+        const startDay = 2; // Martes (0=Dom, 1=Lun, 2=Mar...)
+
+        // Celdas vacías iniciales
+        for(let i=0; i<startDay; i++) {
+            const empty = document.createElement('div');
+            empty.className = 'day-cell empty';
+            grid.appendChild(empty);
+        }
+
+        // Días
+        for(let i=1; i<=daysInMonth; i++) {
+            const cell = document.createElement('div');
+            cell.className = 'day-cell';
+            
+            let content = `<span>${i}</span>`;
+            
+            // Eventos simulados (Hardcoded para coincidir visualmente con la imagen)
+            if(i === 3) content += `<div class="event vacation">1 Dec - 3 Dec<br>• Vacation</div>`;
+            if(i === 11) {
+                cell.style.background = '#FCD34D'; // Amarillo
+                content += `<div class="event birthday">Birthday<br>Mike's</div>`;
+            }
+            if(i === 22) content += `<div class="event sick">• Sickness</div>`;
+            
+            // Días con textura de "rayas" (días pasados o inactivos)
+            if(i >= 29 || i === 30) {
+                cell.style.backgroundImage = 'repeating-linear-gradient(45deg, transparent, transparent 5px, #f3f4f6 5px, #f3f4f6 10px)';
+            }
+
+            cell.innerHTML = content;
+            grid.appendChild(cell);
+        }
+    }
+
+    // Funcionalidad de búsqueda
+    function setupSearch() {
+      const searchInput = document.getElementById('searchInput');
+      searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase();
+        const filteredUsers = users.filter(user => 
+          user.name.toLowerCase().includes(searchTerm) || 
+          user.role.toLowerCase().includes(searchTerm)
+        );
+        renderUserList(filteredUsers);
+      });
+    }
+
+    // Funcionalidad del selector de mes
+    function setupMonthSelector() {
+      const monthSelector = document.getElementById('monthSelector');
+      const months = [
+        'January', 'February', 'March', 'April', 'May', 'June',
+        'July', 'August', 'September', 'October', 'November', 'December'
+      ];
+      
+      let currentMonth = 11; // Diciembre
+      
+      monthSelector.addEventListener('click', function() {
+        currentMonth = (currentMonth + 1) % 12;
+        this.querySelector('span').textContent = months[currentMonth];
+        // En una implementación real, aquí se actualizaría el calendario
+      });
+    }
+
+    // Inicializar
+    document.addEventListener('DOMContentLoaded', () => {
+      renderUserList();
+      renderCalendar();
+      setupSearch();
+      setupMonthSelector();
+    });
+  </script>
+</body>
+</html>
